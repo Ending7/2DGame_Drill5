@@ -8,7 +8,7 @@ hand_arrow = load_image('hand_arrow.png')
 tuk_Ground = load_image("TUK_GROUND.png")
 
 index, t = 0 ,0
-
+motion = 0
 playerX, playerY = tuk_width  // 2, tuk_height // 2
 routeX, routeY = 0, 0
 lock = True
@@ -29,7 +29,13 @@ def player_move():
     if playerX == routeX:
         t = 0
         lock = True
-
+    
+def player_motion():
+    global motion
+    if(playerX > routeX):
+        motion = 0
+    elif(playerX < routeX):
+        motion = 1
 
 def player_run():
     global index
@@ -46,7 +52,11 @@ def player_run():
 
 def draw(frame):
     frameX, frameY, width, height = frame[index]
-    player.clip_draw(frameX,frameY, width, height, playerX, playerY,100 , 150)
+    if motion == 0:
+       player.clip_composite_draw(frameX,frameY,width,height, 0, 'h', playerX, playerY, 100,150)
+
+    if motion == 1:
+       player.clip_draw(frameX,frameY, width, height, playerX, playerY,100 , 150)
 
 def handle_events():
     global running
@@ -66,6 +76,7 @@ while running:
 
     hand_arrow.draw(routeX,routeY)
     player_move()
+    player_motion()
     player_run()
     update_canvas()
 
